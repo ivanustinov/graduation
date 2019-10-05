@@ -3,8 +3,6 @@ package ru.ustinov.web;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.ustinov.model.Vote;
 import ru.ustinov.service.VoteService;
 
@@ -75,21 +73,18 @@ class VoteControllerTest extends AbstractControllerTest {
     }
 
 
-    //This test does not pass if the voting happen's after 11 o'clock.
+    @Test
+    void vote() throws Exception {
+        Vote created = new Vote(LocalDate.now(), USER_1, VILKA_LOSHKA);
+        ResultActions result = mockMvc.perform(put("/profile/vote?restaurantId=100003")
+                .with(userHttpBasic(USER_1)))
+                .andDo(print());
+        Vote returned = readFromJsonResultActions(result, Vote.class);
+        created.setId(returned.getId());
+        assertMatch(returned, created);
+        assertMatch(service.getAll(), VOTE_1, VOTE_2, VOTE_3, VOTE_4, VOTE_5, created);
+    }
 
-//    @Test
-//    void vote() throws Exception {
-//        Vote created = new Vote(LocalDate.now(), USER_1, VILKA_LOSHKA);
-//        ResultActions result = mockMvc.perform(put("/profile/vote?restaurantId=100003")
-//                .with(userHttpBasic(USER_1)))
-//                .andExpect(status().isCreated());
-//
-//        Vote returned = readFromJsonResultActions(result, Vote.class);
-//        created.setId(returned.getId());
-//
-//        assertMatch(returned, created);
-//        assertMatch(service.getAll(), VOTE_1, VOTE_2, VOTE_3, VOTE_4, VOTE_5, created);
-//    }
 
     @Test
     void testDelete() throws Exception {

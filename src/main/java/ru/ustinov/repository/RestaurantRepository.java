@@ -23,13 +23,6 @@ import java.util.List;
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
 
 
-//    @EntityGraph(attributePaths = {"dishesInMenue"})
-//    @Query("SELECT DISTINCT r from Restaurant r " +
-//            "JOIN FETCH r.dishesInMenue d " +
-//            "JOIN FETCH d.dish di " +
-//            "WHERE d.date=?1 ORDER BY r.name")
-//    List<Restaurant> findAllWithDishesInMenueByDate(LocalDate localDate);
-
     @Query("SELECT  r FROM Restaurant r " +
             "ORDER BY r.name")
     List<Restaurant> findAll();

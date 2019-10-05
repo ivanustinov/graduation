@@ -1,13 +1,10 @@
 package ru.ustinov.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**

@@ -203,7 +203,8 @@ class RestaurantControllerTest extends AbstractControllerTest {
         ResultActions result = mockMvc.perform(post(REST_URL)
                 .contentType(APPLICATION_JSON)
                 .content(JsonUtil.writeValue(created))
-                .with(userHttpBasic(ADMIN)));
+                .with(userHttpBasic(ADMIN)))
+                .andExpect(status().isCreated());
 
         Restaurant returned = readFromJsonResultActions(result, Restaurant.class);
         created.setId(returned.getId());
@@ -218,8 +219,9 @@ class RestaurantControllerTest extends AbstractControllerTest {
         mockMvc.perform(put(REST_URL_SLASH + VILKA_LOSHKA_ID)
                 .contentType(APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated))
-                .with(userHttpBasic(ADMIN))).andDo(print());
-        System.out.println(JsonUtil.writeValue(updated));
+                .with(userHttpBasic(ADMIN)))
+                .andExpect(status().isOk())
+                .andDo(print());
         assertMatch(service.get(VILKA_LOSHKA_ID), updated);
     }
 

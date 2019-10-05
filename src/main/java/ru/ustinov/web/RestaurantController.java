@@ -177,7 +177,7 @@ public class RestaurantController {
     }
 
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @ResponseStatus(value = HttpStatus.OK)
     @Secured("ROLE_ADMIN")
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable Integer id) {
         log.info("update {} with id={}", restaurant, id);

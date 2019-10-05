@@ -1,6 +1,5 @@
 package ru.ustinov.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -17,24 +16,24 @@ import static javax.persistence.FetchType.LAZY;
  * @since 09.09.2019
  */
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"DATE", "USER_ID"},
-        name = "date_user_id")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"USER_ID", "DATE"},
+        name = "user_id_date")})
 public class Vote extends AbstractBaseEntity {
 
-    @Column(name = "DATE")
     @NotNull
+    @Column(name = "DATE")
     private LocalDate date;
 
+    @NotNull
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "USER_ID")
-    @NotNull
-//    @JsonIgnore
+    @JsonIgnoreProperties("votes")
     private User user;
 
+    @NotNull
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "RESTAURANT_ID")
-    @NotNull
-    @JsonIgnoreProperties("votes")
+    @JsonIgnoreProperties({"votes", "dishesInMenue"})
     private Restaurant restaurant;
 
 

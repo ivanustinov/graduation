@@ -9,11 +9,9 @@ import ru.ustinov.model.Vote;
 import ru.ustinov.repository.RestaurantRepository;
 import ru.ustinov.repository.UserRepository;
 import ru.ustinov.repository.VoteRepository;
-import ru.ustinov.util.exeption.VotingTimeIsOutException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +32,6 @@ public class VoteService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
 
-    private static final LocalTime VOTE_END_TIME = LocalTime.of(11, 0, 0);
 
     @Autowired
     public VoteService(VoteRepository voteRepository, UserRepository userRepository, RestaurantRepository restaurantRepository) {
@@ -66,26 +63,16 @@ public class VoteService {
     @Transactional
     public Vote save(LocalDateTime dateTime, int userId, int restaurantId) {
         Optional<Vote> voteOptional = voteRepository.findByUserIdAndDate(userId, dateTime.toLocalDate());
-        if (dateTime.toLocalTime().isBefore(VOTE_END_TIME)) {
-            Vote vote = voteOptional.isPresent() ? update(voteOptional.get(), restaurantId) : create(dateTime.toLocalDate(), userId, restaurantId);
-            return initLazyObj(vote);
-        } else {
-            throw new VotingTimeIsOutException("Vote time: " + VOTE_END_TIME + " is over.");
-        }
+        return voteOptional.isPresent() ? update(voteOptional.get(), restaurantId) : create(dateTime.toLocalDate(), userId, restaurantId);
     }
 
-    //init lazy restaurant and user after saving
-    private Vote initLazyObj(Vote vote) {
-        vote.getRestaurant().toString();
-        vote.getUser().toString();
-        return vote;
-    }
 
     private Vote update(Vote vote, int restaurantId) {
         Restaurant restaurant = restaurantRepository.getOne(restaurantId);
         vote.setRestaurant(restaurant);
         return voteRepository.save(vote);
     }
+
 
     private Vote create(LocalDate date, int userId, int restaurantId) {
         User user = userRepository.getOne(userId);
