@@ -1,11 +1,15 @@
 import org.springframework.context.support.GenericXmlApplicationContext;
+import ru.ustinov.model.Restaurant;
+import ru.ustinov.model.User;
+import ru.ustinov.model.Vote;
 import ru.ustinov.repository.RestaurantRepository;
 import ru.ustinov.repository.UserRepository;
-import ru.ustinov.service.RestaurantService;
+import ru.ustinov.repository.VoteRepository;
 
-import javax.imageio.spi.RegisterableService;
 import java.time.LocalDate;
-import java.util.Arrays;
+
+import static ru.ustinov.RestaurantTestData.VILKA_LOSHKA;
+import static ru.ustinov.UserTestData.USER_1;
 
 /**
  * //TODO add comments.
@@ -20,10 +24,15 @@ public class SpringMain {
             appCtx.load("spring/spring-app.xml", "spring/spring-db.xml");
             appCtx.refresh();
 
-            System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
-            RestaurantService userRepository = appCtx.getBean(RestaurantService.class);
-            System.out.println(userRepository.getWithVotesCountByIdAndDate(100003, LocalDate.of(2019, 9, 11)));
-
+//            System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
+            VoteRepository voteRepository = appCtx.getBean(VoteRepository.class);
+            RestaurantRepository restaurantRepository = appCtx.getBean(RestaurantRepository.class);
+            UserRepository userRepository = appCtx.getBean(UserRepository.class);
+            User user = userRepository.getOne(100000);
+            Restaurant restaurant = restaurantRepository.getOne(100003);
+            voteRepository.save(new Vote(LocalDate.now(), user, restaurant));
+            var vote = voteRepository.findById(100029).get();
+            System.out.println(vote);
         }
     }
 }
